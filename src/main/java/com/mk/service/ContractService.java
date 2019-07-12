@@ -32,4 +32,7 @@ public class ContractService {
     public void updateContractInfo(){
         sqlSession.update("updateContractInfo");
     }
+
+
+
 }
