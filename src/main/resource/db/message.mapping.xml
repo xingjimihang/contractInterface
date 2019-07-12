@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mk.service.MessageService">
+    <insert id="insertMessage" parameterType="com.mk.entity.SendMessage">
+        insert into t_sendmessage(
+				messageguid,
+				mobile,
+				content,
+				issend,
+				modidate,
+				modiuser)
+    	values (
+    			#{messageguid,jdbcType=VARCHAR},
+    			#{mobile,jdbcType=VARCHAR},
+    			#{content,jdbcType=VARCHAR},
+    			#{issend,jdbcType=VARCHAR},
+    			#{sendtime,jdbcType=VARCHAR},
+    			#{senduser,jdbcType=VARCHAR})
+    </insert>
+</mapper>

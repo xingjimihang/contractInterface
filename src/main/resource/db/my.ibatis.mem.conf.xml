@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <setting name="lazyLoadingEnabled" value="true" />
+        <!--<setting name="cacheEnabled" value="true" />-->
+    </settings>
+    <mappers>
+        <!-- 合同 -->
+        <mapper resource="db/contract.mapping.xml"></mapper>
+        <mapper resource="db/message.mapping.xml"></mapper>
+    </mappers>
+</configuration>
+

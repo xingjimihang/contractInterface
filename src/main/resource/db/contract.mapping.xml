@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mk.service.ContractService">
+    <update id="updateContractFinancStatus" parameterType="java.util.Map">
+        update t_contract set  FINANCSTATUS=#{financStatus,jdbcType=NUMERIC} where CONTRACTGUID = #{contractguid,jdbcType=VARCHAR}
+    </update>
+    
+    <select id="getContractByContractGuid" parameterType="String" resultType="com.mk.entity.Contract">
+        select   contractguid,
+                 projectguid,
+                 projectcode,
+                 projectname,
+                 bidguid,
+                 bidcode,
+                 bidname
+        from t_contract where contractguid = #{contractguid,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getContractList" resultType="com.mk.entity.Contract">
+          select t_contract.contractguid,
+               t_projectinfo.projectguid,
+               t_projectinfo.projectno as projectcode,
+               t_projectinfo.projectname,
+               t_projectitem.biditemguid as bidguid,
+               t_projectitem.biditemno as bidcode,
+               t_projectitem.biditemname as bidname
+          from t_contract
+          inner join t_contractmoney
+            on t_contract.contractguid = t_contractmoney.contractguid
+          inner join t_buyitemmoney
+            on t_contractmoney.buyitemguid = t_buyitemmoney.buyitemguid
+          inner join t_buyitem
+            on t_buyitemmoney.buyitemguid = t_buyitem.buyitemguid
+          inner join t_buyplan
+            on t_buyitem.buyitempguid = t_buyplan.buyplanguid
+          inner join t_projecttobuyitem
+            on t_buyplan.processinstanceid = t_projecttobuyitem.FINANCIALPURCHASEPLANID
+          inner join t_projectitem
+            on t_projecttobuyitem.biditemguid = t_projectitem.biditemguid
+          inner join t_projectinfo
+            on t_projectitem.projectguid = t_projectinfo.projectguid
+         where t_contract.projectguid is null
+           and t_contract.projectcode is null and t_contract.projectname is null
+           and t_contract.bidguid is null and t_contract.bidcode is null and t_contract.bidname is null
+    </select>
+
+    <update id="updateContractInfo">
+        merge into t_contract
+        using(
+                select t_contract.contractguid,
+               t_projectinfo.projectguid,
+               t_projectinfo.projectno as projectcode,
+               t_projectinfo.projectname,
+               t_projectitem.biditemguid as bidguid,
+               t_projectitem.biditemno as bidcode,
+               t_projectitem.biditemname as bidname
+          from t_contract
+          inner join t_contractmoney
+            on t_contract.contractguid = t_contractmoney.contractguid
+          inner join t_buyitemmoney
+            on t_contractmoney.buyitemguid = t_buyitemmoney.buyitemguid
+          inner join t_buyitem
+            on t_buyitemmoney.buyitemguid = t_buyitem.buyitemguid
+          inner join t_buyplan
+            on t_buyitem.buyitempguid = t_buyplan.buyplanguid
+          inner join t_projecttobuyitem
+            on t_buyplan.processinstanceid = t_projecttobuyitem.FINANCIALPURCHASEPLANID
+          inner join t_projectitem
+            on t_projecttobuyitem.biditemguid = t_projectitem.biditemguid
+          inner join t_projectinfo
+            on t_projectitem.projectguid = t_projectinfo.projectguid
+         where t_contract.projectguid is null
+           and t_contract.projectcode is null and t_contract.projectname is null
+           and t_contract.bidguid is null and t_contract.bidcode is null and t_contract.bidname is null
+        ) t_contract_view on (t_contract.contractguid = t_contract_view.contractguid)
+        when matched then
+          update set t_contract.projectguid = t_contract_view.projectguid,t_contract.projectcode = t_contract_view.projectcode,
+          t_contract.projectname = t_contract_view.projectname,t_contract.bidguid = t_contract_view.bidguid,
+          t_contract.bidcode = t_contract_view.bidcode,t_contract.bidname = t_contract_view.bidname
+    </update>
+</mapper>
